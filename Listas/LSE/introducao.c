@@ -62,6 +62,30 @@ void inserirOrdenado(struct Lista *pLista, int valor){
     }
 }
 
+int removerPorValor(struct Lista *pLista, int valor){
+
+    struct Nodo *anterior, *atual;
+
+    anterior = NULL;
+    atual = pLista->prim;
+
+    while ((atual != NULL) && (atual->info != valor)){
+        anterior = atual;
+        atual = atual->prox;
+    }
+
+    if (atual != NULL) {
+        if (anterior == NULL) {
+            pLista->prim = atual->prox;
+        } else {
+            anterior->prox = atual->prox;
+        }
+        free(atual);
+        return 1;
+    }
+    return 0;
+}
+
 int main(){
     int valor, opcao;
     struct Lista minhaLista;
@@ -94,16 +118,27 @@ int main(){
                 removerInicio(&minhaLista);
                 break;
             }
+            case 4:{
+                printf("Informe um número inteiro:");
+                scanf("%d", &valor);
+                if (!removerPorValor(&minhaLista, valor)){
+                    printf("Valor não encontrado!\n");
+                }
+                break;
+            }
             case 5:{
                 if (estaVazia(&minhaLista)){
-                    printf("Lista vazia");
+                    printf("Lista vazia\n");
                 }else{
                     mostrarLista(&minhaLista);
                 }
                 break;
             }
+            case 6:{
+                break;
+            }
             default:{
-                printf("Opcão inválida!");
+                printf("Opcão inválida!\n");
                 break;
             }
         }
