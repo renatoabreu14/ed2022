@@ -86,22 +86,87 @@ int removerPorValor(struct Lista *pLista, int valor){
     return 0;
 }
 
+int tamanhoLista(struct Lista *pLista){
+    struct Nodo *p;
+    int tamanho = 0;
+    for (p = pLista->prim; p != NULL; p = p->prox){
+        tamanho++;
+    }
+    return tamanho;
+}
+
+int posicaoDoElemento(struct Lista *pLista, int valor){
+    struct Nodo *p;
+    int posicao = 0;
+    for (p = pLista->prim; p != NULL; p = p->prox){
+        if (p->info == valor){
+            return posicao;
+        }
+        posicao++;
+    }
+    return -1;
+}
+
+int removerPorPosicao(struct Lista *pLista, int posicao){
+
+    struct Nodo *anterior, *atual;
+
+    if ((posicao < 0) || (posicao > tamanhoLista(pLista)-1)){
+        return 0;
+    }else{
+        anterior = NULL;
+        atual = pLista->prim;
+
+        int posAtual = 0;
+
+        while ((atual != NULL) && (posAtual != posicao)){
+            anterior = atual;
+            atual = atual->prox;
+            posAtual++;
+        }
+
+        if (atual != NULL) {
+            if (anterior == NULL) {
+                pLista->prim = atual->prox;
+            } else {
+                anterior->prox = atual->prox;
+            }
+            free(atual);
+            return 1;
+        }
+        return 0;
+    }
+}
+
 int main(){
     int valor, opcao;
     struct Lista minhaLista;
     criarLista(&minhaLista);
+    struct Lista minhaLista2;
+    criarLista(&minhaLista2);
 
     do{
+        printf("0 - Inserir elemento no início da segunda lista\n");
         printf("1 - Inserir elemento no início\n");
         printf("2 - Inserir elemento em ordem (só se a lista estiver ordenada)\n");
         printf("3 - Remover elemento no início\n");
-        printf("4 - Remover elemento\n");
-        printf("5 - Mostrar a lista\n");
-        printf("6 - Sair\n");
+        printf("4 - Remover elemento por valor\n");
+        printf("5 - Remover elemento por posicão\n");
+        printf("6 - Mostrar a lista 1\n");
+        printf("7 - Mostrar a lista 2\n");
+        printf("8 - Mostrar posicão do elemento\n");
+        printf("9 - Sair\n");
         printf("Informe a opcao: \n");
         scanf("%d", &opcao);
 
         switch (opcao) {
+            case 0:{
+                printf("Informe um número inteiro:");
+                scanf("%d", &valor);
+                inserirInicio(&minhaLista2, valor);
+                break;
+                break;
+            }
             case 1:{
                 printf("Informe um número inteiro:");
                 scanf("%d", &valor);
@@ -127,6 +192,14 @@ int main(){
                 break;
             }
             case 5:{
+                printf("Informe posicão que deseja excluir:");
+                scanf("%d", &valor);
+                if (!removerPorPosicao(&minhaLista, valor)){
+                    printf("Posicão não encontrada!\n");
+                }
+                break;
+            }
+            case 6:{
                 if (estaVazia(&minhaLista)){
                     printf("Lista vazia\n");
                 }else{
@@ -134,7 +207,26 @@ int main(){
                 }
                 break;
             }
-            case 6:{
+            case 7:{
+                if (estaVazia(&minhaLista2)){
+                    printf("Lista vazia\n");
+                }else{
+                    mostrarLista(&minhaLista2);
+                }
+                break;
+            }
+            case 8:{
+                printf("Informe um número inteiro:");
+                scanf("%d", &valor);
+                int posicao = posicaoDoElemento(&minhaLista, valor);
+                if (posicao == -1){
+                    printf("Elemento não encontrado!\n");
+                }else{
+                    printf("O elemento foi encontrado na posicao: %d\n", posicao);
+                }
+                break;
+            }
+            case 9:{
                 break;
             }
             default:{
@@ -143,5 +235,5 @@ int main(){
             }
         }
 
-    }while(opcao != 6);
+    }while(opcao != 9);
 }
