@@ -18,9 +18,9 @@ int estaVazia(struct Lista *pLista){
     return (pLista->prim == NULL);
 }
 
-void inserirInicio(struct Lista *pLista, int valor){
+void inserirInicio(struct Lista *pLista, int valor) {
     struct Nodo *novo;
-    novo = (struct Nodo*) malloc(sizeof(struct Nodo));
+    novo = (struct Nodo *) malloc(sizeof(struct Nodo));
     novo->info = valor;
     novo->prox = pLista->prim;
     pLista->prim = novo;
@@ -138,6 +138,35 @@ int removerPorPosicao(struct Lista *pLista, int posicao){
     }
 }
 
+void inserirFim(struct Lista *pLista, int valor){
+    struct Nodo *novo, *p;
+    novo = (struct Nodo*) malloc(sizeof(struct Nodo));
+    novo->info = valor;
+    p = pLista->prim;
+    if (p == NULL) {
+        novo->prox = pLista->prim;
+        pLista->prim = novo;
+    }else {
+        while (p->prox != NULL) {
+            p = p->prox;
+        }
+        p->prox = novo;
+        novo->prox = NULL;
+    }
+}
+
+void unirListas(struct Lista *pLista1, struct Lista *pLista2){
+    struct Nodo *p;
+    p = pLista2->prim;
+    if (!estaVazia(pLista2)){
+        inserirFim(pLista1, p->info);
+        while (p->prox != NULL){
+            p = p->prox;
+            inserirFim(pLista1, p->info);
+        }
+    }
+}
+
 int main(){
     int valor, opcao;
     struct Lista minhaLista;
@@ -155,7 +184,8 @@ int main(){
         printf("6 - Mostrar a lista 1\n");
         printf("7 - Mostrar a lista 2\n");
         printf("8 - Mostrar posicão do elemento\n");
-        printf("9 - Sair\n");
+        printf("9 - Unir listas\n");
+        printf("10 - Sair\n");
         printf("Informe a opcao: \n");
         scanf("%d", &opcao);
 
@@ -227,6 +257,10 @@ int main(){
                 break;
             }
             case 9:{
+                unirListas(&minhaLista, &minhaLista2);
+                break;
+            }
+            case 10:{
                 break;
             }
             default:{
@@ -235,5 +269,5 @@ int main(){
             }
         }
 
-    }while(opcao != 9);
+    }while(opcao != 10);
 }
