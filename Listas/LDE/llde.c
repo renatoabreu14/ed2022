@@ -59,6 +59,33 @@ void inserirFim(struct Lista *pLista, int valor) {
         p->prox = novo;
     }
 }
+
+void inserirOrdenado(struct Lista *pLista, int valor){
+    if (estaVazia(pLista)) {
+        inserirInicio(pLista, valor);
+    } else {
+        struct Nodo *p;
+        p = pLista->prim;
+        while((p != NULL) && (p->info < valor)){
+            p = p->prox;
+        }
+        if (p == NULL){
+            inserirFim(pLista, valor);
+        }else if (p->ant == NULL){
+            inserirInicio(pLista, valor);
+        }else{
+            struct Nodo *novo;
+            novo = (struct Nodo *) malloc(sizeof(struct Nodo));
+            novo->info = valor;
+
+            novo->prox = p;
+            novo->ant = p->ant;
+            p->ant->prox = novo;
+            p->ant = novo;
+        }
+    }
+}
+
 void mostrarLista(struct Lista *pLista){
     struct Nodo *p;
     for(p = pLista->prim; p != NULL; p = p->prox){
@@ -76,7 +103,8 @@ int main(){
     do{
         printf("1 - Inserir no início\n");
         printf("2 - Inserir no fim\n");
-        printf("3 - Mostrar lista\n");
+        printf("3 - Inserir ordenado\n");
+        printf("4 - Mostrar lista\n");
         printf("6 - Sair\n");
         printf("Escolha uma opcão:");
         scanf("%d", &opcao);
@@ -95,6 +123,12 @@ int main(){
                 break;
             }
             case 3:{
+                printf("Informe um valor:");
+                scanf("%d", &valor);
+                inserirOrdenado(&minhaLista, valor);
+                break;
+            }
+            case 4:{
                 if (estaVazia(&minhaLista)){
                     printf("Lista vazia!\n");
                 }else{
