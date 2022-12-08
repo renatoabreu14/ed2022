@@ -86,6 +86,48 @@ void inserirOrdenado(struct Lista *pLista, int valor){
     }
 }
 
+void removerInicio(struct Lista *pLista){
+    struct Nodo *p = pLista->prim;
+    pLista->prim = p->prox;
+    if (pLista->prim != NULL){
+        pLista->prim->ant = NULL;
+    }
+    free(p);
+}
+
+void removerFim(struct Lista *pLista){
+    struct Nodo *p = pLista->prim;
+    while (p->prox != NULL){
+        p = p->prox;
+    }
+    if (p->ant != NULL){
+        p->ant->prox = NULL;
+    }else{
+        pLista->prim = NULL;
+    }
+    free(p);
+}
+
+void removerPorValor(struct Lista *pLista, int valor){
+    struct Nodo *p = pLista->prim;
+    while ((p != NULL) && (p->info != valor)){
+        p = p->prox;
+    }
+    if (p != NULL){
+        if (p->ant == NULL){
+            removerInicio(pLista);
+        }else if (p->prox == NULL){
+            removerFim(pLista);
+        }else{
+            p->prox->ant = p->ant;
+            p->ant->prox = p->prox;
+            free(p);
+        }
+    }else{
+        printf("Valor não encontrado!\n");
+    }
+}
+
 void mostrarLista(struct Lista *pLista){
     struct Nodo *p;
     for(p = pLista->prim; p != NULL; p = p->prox){
@@ -105,7 +147,10 @@ int main(){
         printf("2 - Inserir no fim\n");
         printf("3 - Inserir ordenado\n");
         printf("4 - Mostrar lista\n");
-        printf("6 - Sair\n");
+        printf("5 - Remover início\n");
+        printf("6 - Remover fim\n");
+        printf("7 - Remover por valor\n");
+        printf("8 - Sair\n");
         printf("Escolha uma opcão:");
         scanf("%d", &opcao);
 
@@ -136,12 +181,34 @@ int main(){
                 }
                 break;
             }
+            case 5:{
+                if (estaVazia(&minhaLista)){
+                    printf("Lista vazia!\n");
+                }else{
+                    removerInicio(&minhaLista);
+                }
+                break;
+            }
             case 6:{
+                if (estaVazia(&minhaLista)){
+                    printf("Lista vazia!\n");
+                }else{
+                    removerFim(&minhaLista);
+                }
+                break;
+            }
+            case 7:{
+                printf("Informe um valor:");
+                scanf("%d", &valor);
+                removerPorValor(&minhaLista, valor);
+                break;
+            }
+            case 8:{
                 break;
             }
             default:{
                 printf("Opcão inválida!\n");
             }
         }
-    } while (opcao != 6);
+    } while (opcao != 8);
 }
